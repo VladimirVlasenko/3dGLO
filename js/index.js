@@ -261,7 +261,7 @@ window.addEventListener('DOMContentLoaded', function() {
             target.src = previousSrc;
         } 
     });
-// Калькулятор на сайте
+// Калькулятор на сайте(1)
     let calc = document.querySelector('.calc');
     let inputCalc = document.querySelectorAll('.calc-item');
     calc.addEventListener('input', (event) => {
@@ -271,6 +271,7 @@ window.addEventListener('DOMContentLoaded', function() {
             let newValue = target.value;
             if(newValue.match(/[0-9]/g)) {
                 target.value = value;
+
                 return;
             }
             value = newValue;
