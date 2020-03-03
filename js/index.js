@@ -165,7 +165,6 @@ window.addEventListener('DOMContentLoaded', function() {
             }
             dot = document.querySelectorAll('.dot');
             dot[0].classList.add('dot-active');
-            console.log(dot);
         };
         createDots();
 
@@ -244,5 +243,39 @@ window.addEventListener('DOMContentLoaded', function() {
 
     };
     slider();
+// Замена картинок
+    let images = document.querySelectorAll('.command__photo');
+    let command = document.querySelector('.command');
+    let previousSrc;
+    command.addEventListener('mouseover', (event) => {
+        let target = event.target;
+        if (target.classList.contains('command__photo')) {
+            previousSrc = target.src;
+            target.src = target.dataset.img;
+        } 
+    });
+    command.addEventListener('mouseout', (event) => {
+        let target = event.target;
+        if (target.classList.contains('command__photo')) {
+            target.dataset.img = target.src;
+            target.src = previousSrc;
+        } 
+    });
+// Калькулятор на сайте
+    let calc = document.querySelector('.calc');
+    let inputCalc = document.querySelectorAll('.calc-item');
+    calc.addEventListener('input', (event) => {
+        let target = event.target;
+        let value = target.value;
+        if(target.type === 'number') {
+            let newValue = target.value;
+            if(newValue.match(/[0-9]/g)) {
+                target.value = value;
+                return;
+            }
+            value = newValue;
+        }
+    });
+
 
 });
