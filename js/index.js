@@ -90,6 +90,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 docWidth = document.documentElement.clientWidth;
                 if (docWidth > 768) {
                     popup.style.opacity = 0;
+                    let idInterval;
                     let animatePopup = () => {
                         count++;
                         if(count < 100) {
@@ -99,7 +100,7 @@ window.addEventListener('DOMContentLoaded', function() {
                             count = 0;
                         }
                     };
-                    let idInterval = setInterval(animatePopup, 16);
+                    idInterval = setInterval(animatePopup, 16);
                 }  
             });
         });
@@ -324,4 +325,82 @@ window.addEventListener('DOMContentLoaded', function() {
     };
     calcIt(100);
 
+    // отправляем ajax форму
+    const sendForm = () => {
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся';
+        const form = document.getElementById('form1');
+        const bodyTag = document.querySelector('body');
+
+        const statusMessage = document.createElement('div');
+        statusMessage.style.cssText = 'font-size: 2rem';
+        
+        bodyTag.addEventListener('submit', (event) => {
+            event.preventDefault();
+            let allInputs = document.querySelectorAll('input');
+            let target = event.target;
+            if (target.matches('form')) {
+                statusMessage.textContent = loadMessage;
+                statusMessage.style.color = 'white';
+                target.appendChild(statusMessage);
+            }
+
+            const formData = new FormData(target);
+            let body = {};
+
+            formData.forEach((val, key) => {
+                body[key] = val;
+            });
+            postData(body, () => {
+                statusMessage.textContent = 'Данные успешно отправлены!';
+                let img = document.createElement('IMG');
+                img.src = './images/recall.jpg';
+                img.style.height = '200px';
+                target.appendChild(img);
+
+                allInputs.forEach((item) => {
+                    item.value = '';
+                });
+            },
+            (error) => {
+                statusMessage.textContent = loadMessage;
+                console.error(error);
+            });
+        });
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+                if(request.readyState !== 4) {
+                    return;
+                }
+                if(request.status === 200) {
+                    outputData();   
+                } else {
+                    errorData(request.status);
+                }
+            });
+
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-type', 'application/json');
+
+            request.send(JSON.stringify(body));
+        };
+    };
+    sendForm();
+    // Валидация форм
+    let bodyTag = document.querySelector('body');
+    bodyTag.addEventListener('input', (event) => {
+        event.preventDefault();
+        let target = event.target;
+        if (target.matches('input[name="user_phone"]')) {
+            target.value = target.value.replace(/[^\+\d]/g, '');
+          } else if (target.matches('input[name="user_name"]') || target.matches('input[name="user_message"]')) {
+            target.value = target.value.replace(/[^а-яА-Яa-zA-Z,.!?"';: ]/, '');
+          } else if (target.matches('input[name="user_email"]')) {
+              target.value = target.value.replace(/[а-яА-Я]/gi, '');
+          }
+
+    });
 });
