@@ -48,7 +48,7 @@ window.addEventListener('DOMContentLoaded', function() {
         
     }
 
-    countTimer('4 march 2020');
+    countTimer('9 march 2020');
 
     // Меню
     const toggleMenu = () => {
