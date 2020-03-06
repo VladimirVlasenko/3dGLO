@@ -369,24 +369,27 @@ window.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        const postData = (body, outputData, errorData) => {
+        const postData = (body) => {
             const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
-                if(request.readyState !== 4) {
-                    return;
-                }
-                if(request.status === 200) {
-                    outputData();   
-                } else {
-                    errorData(request.status);
-                }
-            });
-
+            return new Promise((resolve, reject) => {
+                request.addEventListener('readystatechange', () => {
+                    if(request.readyState !== 4) {
+                        return;
+                    }
+                    if(request.status === 200) {
+                        resolve(successMessage); 
+                    } else {
+                        reject(request.status);
+                    }
+                });
             request.open('POST', './server.php');
             request.setRequestHeader('Content-type', 'application/json');
-
             request.send(JSON.stringify(body));
+            });
         };
+        postData()
+        .then(successMessage)
+        .catch(errorMessage);
     };
     sendForm();
     // Валидация форм
