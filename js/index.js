@@ -327,18 +327,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // отправляем ajax форму
     const sendForm = () => {
-        const errorMessage = 'Что-то пошло не так...',
-            loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Мы скоро с вами свяжемся';
-        const form = document.getElementById('form1');
+        const loadMessage = 'Загрузка...';
         const bodyTag = document.querySelector('body');
-
+        let allInputs = document.querySelectorAll('input');
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = 'font-size: 2rem';
         
         bodyTag.addEventListener('submit', (event) => {
             event.preventDefault();
-            let allInputs = document.querySelectorAll('input');
+
             let target = event.target;
             if (target.matches('form')) {
                 statusMessage.textContent = loadMessage;
@@ -352,22 +349,23 @@ window.addEventListener('DOMContentLoaded', function() {
             formData.forEach((val, key) => {
                 body[key] = val;
             });
-            postData(body, () => {
-                statusMessage.textContent = 'Данные успешно отправлены!';
+        });
+
+        let successMessage = () => {
+            statusMessage.textContent = 'Данные успешно отправлены!';
                 let img = document.createElement('IMG');
                 img.src = './images/recall.jpg';
                 img.style.height = '200px';
                 target.appendChild(img);
-
                 allInputs.forEach((item) => {
                     item.value = '';
                 });
-            },
-            (error) => {
-                statusMessage.textContent = loadMessage;
-                console.error(error);
-            });
-        });
+        };
+
+        let errorMessage = () => {
+            statusMessage.textContent = 'Что-то пошло не так...';
+            console.error("Что-то пошло ...");
+        };
 
         const postData = (body) => {
             const request = new XMLHttpRequest();
@@ -387,6 +385,7 @@ window.addEventListener('DOMContentLoaded', function() {
             request.send(JSON.stringify(body));
             });
         };
+        
         postData()
         .then(successMessage)
         .catch(errorMessage);
