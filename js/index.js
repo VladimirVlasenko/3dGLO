@@ -328,15 +328,55 @@ window.addEventListener('DOMContentLoaded', function() {
     // отправляем ajax форму
     const sendForm = () => {
         const loadMessage = 'Загрузка...';
-        const bodyTag = document.querySelector('body');
+        let bodyTag = document.querySelector('body');
         let allInputs = document.querySelectorAll('input');
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = 'font-size: 2rem';
         
         bodyTag.addEventListener('submit', (event) => {
             event.preventDefault();
-
             let target = event.target;
+            let successMessage = () => {
+                statusMessage.textContent = 'Данные успешно отправлены!';
+
+                    let img = document.createElement('IMG');
+                    img.src = './images/recall.jpg';
+                    img.style.height = '200px';
+                    target.appendChild(img);
+
+                    allInputs.forEach((item) => {
+                        item.value = '';
+                    });
+            };
+    
+            let errorMessage = () => {
+                statusMessage.textContent = 'Что-то пошло не так...';
+                console.error("Что-то пошло ...");
+            };
+            const postData = (body) => {
+                const request = new XMLHttpRequest();
+                return new Promise((resolve, reject) => {
+                    request.addEventListener('readystatechange', () => {
+                        if(request.readyState !== 4) {
+                            return;
+                        }
+                        if(request.status === 200) {
+                            resolve(successMessage); 
+                        } else {
+                            reject(request.status);
+                        }
+                    });
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-type', 'application/json');
+                request.send(JSON.stringify(body));
+                });
+            };
+            
+            postData()
+            .then(successMessage)
+            .catch(errorMessage);
+
+            
             if (target.matches('form')) {
                 statusMessage.textContent = loadMessage;
                 statusMessage.style.color = 'white';
@@ -350,45 +390,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 body[key] = val;
             });
         });
-
-        let successMessage = () => {
-            statusMessage.textContent = 'Данные успешно отправлены!';
-                let img = document.createElement('IMG');
-                img.src = './images/recall.jpg';
-                img.style.height = '200px';
-                target.appendChild(img);
-                allInputs.forEach((item) => {
-                    item.value = '';
-                });
-        };
-
-        let errorMessage = () => {
-            statusMessage.textContent = 'Что-то пошло не так...';
-            console.error("Что-то пошло ...");
-        };
-
-        const postData = (body) => {
-            const request = new XMLHttpRequest();
-            return new Promise((resolve, reject) => {
-                request.addEventListener('readystatechange', () => {
-                    if(request.readyState !== 4) {
-                        return;
-                    }
-                    if(request.status === 200) {
-                        resolve(successMessage); 
-                    } else {
-                        reject(request.status);
-                    }
-                });
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-type', 'application/json');
-            request.send(JSON.stringify(body));
-            });
-        };
-        
-        postData()
-        .then(successMessage)
-        .catch(errorMessage);
     };
     sendForm();
     // Валидация форм
