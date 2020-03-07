@@ -326,6 +326,16 @@ window.addEventListener('DOMContentLoaded', function() {
     calcIt(100);
 
     // отправляем ajax форму
+    const postData = (body) => {
+        return fetch('./server.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+    };
+
     const sendForm = () => {
         const loadMessage = 'Загрузка...';
         let bodyTag = document.querySelector('body');
@@ -348,6 +358,12 @@ window.addEventListener('DOMContentLoaded', function() {
                         item.value = '';
                     });
             };
+
+            const formData = new FormData(target);
+            let body = {};
+            formData.forEach((val, key) => {
+                body[key] = val;
+            });
     
             let errorMessage = () => {
                 statusMessage.textContent = 'Что-то пошло не так...';
@@ -360,38 +376,18 @@ window.addEventListener('DOMContentLoaded', function() {
                 target.appendChild(statusMessage);
             }
 
-            const formData = new FormData(target);
-            let body = {};
-
-            formData.forEach((val, key) => {
-                body[key] = val;
-            });
-
-            const postData = (body) => {
-                const request = new XMLHttpRequest();
-                return new Promise((resolve, reject) => {
-                    request.addEventListener('readystatechange', () => {
-                        if(request.readyState !== 4) {
-                            return;
-                        }
-                        if(request.status === 200) {
-                            resolve(successMessage); 
-                        } else {
-                            reject(request.status);
-                        }
-                    });
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-type', 'application/json');
-                request.send(JSON.stringify(body));
-                });
-            };
-            
             postData(body)
-            .then(successMessage)
+            .then((response) => {
+                if(response.status !== 200) {
+                    throw new Error('Network status is not 200');
+                }
+                successMessage();
+            })
             .catch(errorMessage);
 
         });
     };
+
     sendForm();
     // Валидация форм
     let bodyTag = document.querySelector('body');
