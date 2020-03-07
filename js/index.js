@@ -353,6 +353,20 @@ window.addEventListener('DOMContentLoaded', function() {
                 statusMessage.textContent = 'Что-то пошло не так...';
                 console.error("Что-то пошло ...");
             };
+
+            if (target.matches('form')) {
+                statusMessage.textContent = loadMessage;
+                statusMessage.style.color = 'white';
+                target.appendChild(statusMessage);
+            }
+
+            const formData = new FormData(target);
+            let body = {};
+
+            formData.forEach((val, key) => {
+                body[key] = val;
+            });
+
             const postData = (body) => {
                 const request = new XMLHttpRequest();
                 return new Promise((resolve, reject) => {
@@ -372,23 +386,10 @@ window.addEventListener('DOMContentLoaded', function() {
                 });
             };
             
-            postData()
+            postData(body)
             .then(successMessage)
             .catch(errorMessage);
 
-            
-            if (target.matches('form')) {
-                statusMessage.textContent = loadMessage;
-                statusMessage.style.color = 'white';
-                target.appendChild(statusMessage);
-            }
-
-            const formData = new FormData(target);
-            let body = {};
-
-            formData.forEach((val, key) => {
-                body[key] = val;
-            });
         });
     };
     sendForm();
