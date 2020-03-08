@@ -22,14 +22,20 @@ const sendForm = () => {
         let successMessage = () => {
             statusMessage.textContent = 'Данные успешно отправлены!';
 
-                let img = document.createElement('IMG');
-                img.src = './images/recall.jpg';
-                img.style.height = '200px';
-                target.appendChild(img);
+            let img = document.createElement('IMG');
+            img.src = './images/recall.jpg';
+            img.style.height = '200px';
+            target.appendChild(img);
 
-                allInputs.forEach((item) => {
-                    item.value = '';
-                });
+            allInputs.forEach((item) => {
+                item.value = '';
+            });
+            setTimeout(() => {
+                console.log(';alsdjf;aj');
+                target.removeChild(img);
+                statusMessage.textContent = '';
+            }, 5000);
+                
         };
 
         const formData = new FormData(target);
