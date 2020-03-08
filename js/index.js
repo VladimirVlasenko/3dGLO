@@ -1,6 +1,9 @@
 
 window.addEventListener('DOMContentLoaded', function() {
     'use strict';
+
+
+
     
     // timer
     function countTimer(deadline) {
@@ -77,7 +80,6 @@ window.addEventListener('DOMContentLoaded', function() {
     toggleMenu();
 
     // Popup окно
-    
     const togglePopup = () => {
         const popup = document.querySelector('.popup'),
               popupBtn = document.querySelectorAll('.popup-btn'),
@@ -118,7 +120,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     };
     togglePopup();
-    //  Табы
+    //  Таб
     const tabs = () => {
         const tabHeader = document.querySelector('.service-header'),
               tab = tabHeader.querySelectorAll('.service-header-tab'),
@@ -244,7 +246,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     };
     slider();
-// Замена картинок
+    // Замена картинок
+    const changeImages = () => {
     let images = document.querySelectorAll('.command__photo');
     let command = document.querySelector('.command');
     let previousSrc;
@@ -262,81 +265,87 @@ window.addEventListener('DOMContentLoaded', function() {
             target.src = previousSrc;
         } 
     });
-// Калькулятор на сайте(1)
-    let calc = document.querySelector('.calc');
-    calc.addEventListener('input', (event) => {
-        let target = event.target;
-        let value = target.value;
-        if(target.type === 'number') {
-            let newValue = target.value;
-            if(newValue.match(/[0-9]/g)) {
-                target.value = value;
-
-                return;
-            }
-            value = newValue;
-        }
-    });
-
-    const calcIt = (price = 100) => {
-
-        const calcBlock = document.querySelector('.calc-block');
-        const calcType = document.querySelector('.calc-type');
-        const calcSquare = document.querySelector('.calc-square');
-        const calcDay = document.querySelector('.calc-day');
-        const calcCount = document.querySelector('.calc-count');
-        const totalValue = document.getElementById('total');
-
-        const countSum = () => {
-            let total = 0,
-                countValue = 1,
-                dayValue = 1;
-
-            let typeValue = calcType.options[calcType.selectedIndex].value;
-            let squareValue = +calcSquare.value;
-
-
-            if(calcCount.value > 1) {
-                countValue += (+calcCount.value - 1) / 10;
-            }
-
-            if (calcDay.value && calcDay.value < 5) {
-                dayValue *= 2;
-            } else if (calcDay.value && calcDay.value < 10) {
-                dayValue *= 1.5;
-            }
-
-            if(typeValue && squareValue) {
-                total = price * typeValue * squareValue * countValue * dayValue;
-            }
-
-            totalValue.textContent = total;
-        };
-
-
-        calcBlock.addEventListener('change', (event) => {
+    };
+    changeImages();
+    
+    // Калькулятор на сайте(1)
+    const calcMod = () => {
+        let calc = document.querySelector('.calc');
+        calc.addEventListener('input', (event) => {
             let target = event.target;
-            if (target.matches('.calc-type') || target.matches('.calc-square') ||
-            target.matches('.calc-day') || target.matches('.calc-count')) {
-                countSum();
+            let value = target.value;
+            if(target.type === 'number') {
+                let newValue = target.value;
+                if(newValue.match(/[0-9]/g)) {
+                    target.value = value;
+
+                    return;
+                }
+                value = newValue;
             }
         });
-        
-    };
-    calcIt(100);
+        const calcIt = (price = 100) => {
 
-    // отправляем ajax форму
-    const postData = (body) => {
-        return fetch('./server.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
+            const calcBlock = document.querySelector('.calc-block');
+            const calcType = document.querySelector('.calc-type');
+            const calcSquare = document.querySelector('.calc-square');
+            const calcDay = document.querySelector('.calc-day');
+            const calcCount = document.querySelector('.calc-count');
+            const totalValue = document.getElementById('total');
+
+            const countSum = () => {
+                let total = 0,
+                    countValue = 1,
+                    dayValue = 1;
+
+                let typeValue = calcType.options[calcType.selectedIndex].value;
+                let squareValue = +calcSquare.value;
+
+
+                if(calcCount.value > 1) {
+                    countValue += (+calcCount.value - 1) / 10;
+                }
+
+                if (calcDay.value && calcDay.value < 5) {
+                    dayValue *= 2;
+                } else if (calcDay.value && calcDay.value < 10) {
+                    dayValue *= 1.5;
+                }
+
+                if(typeValue && squareValue) {
+                    total = price * typeValue * squareValue * countValue * dayValue;
+                }
+
+                totalValue.textContent = total;
+            };
+
+
+            calcBlock.addEventListener('change', (event) => {
+                let target = event.target;
+                if (target.matches('.calc-type') || target.matches('.calc-square') ||
+                target.matches('.calc-day') || target.matches('.calc-count')) {
+                    countSum();
+                }
+            });
+        };
+        calcIt(100);
     };
+    calcMod();
+    // отправляем ajax форму
+    
 
     const sendForm = () => {
+
+        const postData = (body) => {
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+        };
+
         const loadMessage = 'Загрузка...';
         let bodyTag = document.querySelector('body');
         let allInputs = document.querySelectorAll('input');
@@ -387,20 +396,21 @@ window.addEventListener('DOMContentLoaded', function() {
 
         });
     };
-
     sendForm();
     // Валидация форм
-    let bodyTag = document.querySelector('body');
-    bodyTag.addEventListener('input', (event) => {
-        event.preventDefault();
-        let target = event.target;
-        if (target.matches('input[name="user_phone"]')) {
-            target.value = target.value.replace(/[^\+\d]/g, '');
-          } else if (target.matches('input[name="user_name"]') || target.matches('input[name="user_message"]')) {
-            target.value = target.value.replace(/[^а-яА-Яa-zA-Z,.!?"';: ]/, '');
-          } else if (target.matches('input[name="user_email"]')) {
-              target.value = target.value.replace(/[а-яА-Я]/gi, '');
-          }
+    const formValidation = () => {
+        let bodyTag = document.querySelector('body');
+        bodyTag.addEventListener('input', (event) => {
+            event.preventDefault();
+            let target = event.target;
+            if (target.matches('input[name="user_phone"]')) {
+                target.value = target.value.replace(/[^\+\d]/g, '');
+            } else if (target.matches('input[name="user_name"]') || target.matches('input[name="user_message"]')) {
+                target.value = target.value.replace(/[^а-яА-Яa-zA-Z,.!?"';: ]/, '');
+            } else if (target.matches('input[name="user_email"]')) {
+                target.value = target.value.replace(/[а-яА-Я]/gi, '');
+            }
 
-    });
-});
+        });
+    };
+    formValidation();
