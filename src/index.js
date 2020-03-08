@@ -5,6 +5,7 @@ import elementClosest from 'element-closest';
 elementClosest(window);
 import 'formdata-polyfill';
 import 'promise-polyfill';
+import 'fetch-polyfill';
 
 import countTimer from './modules/countTimer';
 import toggleMenu from './modules/toggleMenu';
