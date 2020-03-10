@@ -16,6 +16,8 @@ import calcMod from './modules/calcMod';
 import sendForm from './modules/sendForm';
 import formValidation from './modules/formValidation';
 import changeImages from './modules/changeImages';
+import caruselS from './modules/caruselS';
+
 
 // timer
 countTimer('9 march 2020');
@@ -35,3 +37,5 @@ calcMod();
 sendForm();
 // Валидация форм
 formValidation();
+// Карусель
+caruselS();
